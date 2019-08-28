@@ -1,6 +1,7 @@
 <?php
     require_once 'connection.php';
     error_reporting (0);
+    session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,9 +9,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ebook Library - Login</title>
+    <title>Ebook Library - Home</title>
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://kit.fontawesome.com/9d4da5e5f7.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
     <header>
@@ -24,7 +26,16 @@
                 <li><a href="author.php">Authors</a></li>
                 <li><a href="about.php">About</a></li>
                 <li><a href="contact.php">Contact</a></li>
-                <li><a href="login.php">Login</a></li>
+                <?php 
+                    if(isset($_SESSION["customer_name"])) {
+                ?>
+                    <li><a href="logout.php">logout</a></li>
+                    <li><a href="#"><?php echo $_SESSION["customer_user_name"] ; ?></a></li>
+                <?php 
+                    } else {
+                ?>
+                    <li><a href="login.php">login</a></li>
+                <?php } ?>
             </menu>
             <div class="menu-lines">
                 <div class="line1"></div>
@@ -33,7 +44,7 @@
             </div>
         </nav>
         <menu class="sub-menu">
-            <li><a href="">Fiction</a></li>
+            <li><a href="books.php?category=fiction">Fiction</a></li>
             <li><a href="">Non-fiction</a></li>
             <li><a href="">Thriller</a></li>
             <li><a href="">Horror</a></li>
@@ -47,22 +58,37 @@
             <p>Read books anywhere anytime without carrying any book</p>
         </section>
     </header>
-    <div class="author">
-        <?php
-            $sql = "select fullName, short_desc, img from author";
-            $result = $conn->query($sql);
-            if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) { 
-              ?>
-                <div class="author-container">
-                <img src="./img/<?php echo $row['img']; ?>" alt="">
-                <h1><?php echo $row['fullName']; ?></h1>
-                <p><?php echo $row['short_desc']; ?></p>
-            </div> 
-              <?php 
-            } }
-        ?>
-    </div>
+    <section class="author-list" id="authorList">
+        <h1>We have covered your love for books with best authors</h1>
+            <div class="author">
+                <div class="author-container"  v-for="author in authors">
+                    <img v-bind:src="author.img" alt="">
+                    <h1>{{ author.fullName }}</h1>
+                    <p>{{ author.short_desc }}</p>
+                </div>
+            </div>
+    </section>
+    <section class="aboutus" id="about">
+        <h1>Our short overview</h1>
+        <h2>Who We Are</h2>
+        <p>E-Book Library is the world’s largest site for readers and book recommendations. 
+            Our mission is to help people find and share books they love. E-Book Library launched in August 2019.</p>
+        <h3>1 million</h3>
+        <p>MEMBERS</p>
+        <hr>
+        <h3>15 Hundred</h3>
+        <p>BOOKS ADDED</p>
+        <hr>
+        <h3>2 million</h3>
+        <p>REVIEWS</p>
+        <hr>
+        <div class="index-about-img">
+            <h3>
+            The right book in the right hands at the right time
+can change the world.
+            </h3>
+        </div>
+    </section>
     <footer>
         <div>
             <h2>Company</h2>
@@ -93,11 +119,35 @@
             <a href="#">Mobile Version</a>
         </div>
     </footer>
-    <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js" integrity="sha256-S1J4GVHHDMiirir9qsXWc8ZWw74PHHafpsHp5PXtjTs=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/navigation.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#authorList',
+            data: {
+                successMessage: "",
+                errorMessage: "",
+                authors: []
+            },
+            mounted: function(){
+                this.getAllAuthors();
+            },
+            methods:{
+                getAllAuthors: function(){
+                axios.get('http://localhost/ebooklibrary/process.php?action=read_author')
+                    .then(function(response){
+                        if(response.data.error){
+                            app.errorMessage = response.data.message;
+                        }
+                        else{
+                            app.authors = response.data.authors;
+                        }
+                    });
+		        }
+            }
+        });
+    </script>
 </body>
 </html>

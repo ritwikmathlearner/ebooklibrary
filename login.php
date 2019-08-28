@@ -1,3 +1,11 @@
+<?php
+    require_once 'connection.php';
+    error_reporting (0);
+    session_start();
+    if(isset($_SESSION["customer_email"])) {
+        header("location: index.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,17 +46,24 @@
             </form>
         </menu>
     </header>
-    <form action="usermanagement.php" method="POST" class="user-form">
+    <div class="user-form" id="form">
         <h1>Sign in to E-book Library</h1>
+        <p>{{ errorMsg }}</p>
+        <?php
+            if(isset($_SESSION['register_success'])) {
+                echo '<p style="text-align:center; margin: .5rem;">' . $_SESSION['register_success'] . '</p>';
+                unset($_SESSION['register_success']);
+            }
+        ?>
         <div class="form-container">
-            <label for="email">Email address</label>
-            <input type="text" name="email" placeholder="your@email.com" id="email">
-            <label for="pass">Password</label>
-            <input type="password" name="pass" placeholder="********" id="pass">
-            <button type="submit" value="login" name="login" id="user-form-btn">Login</button>
+        <label for="email">Email address</label><span style="font-size:13px;">{{ errorEmail }}</span>
+            <input type="text" name="email" placeholder="your@email.com" id="email" v-model="currentUser.email">
+            <label for="password">Password</label><span style="font-size:13px;">{{ errorPassword }}</span>
+            <input type="password" name="password" placeholder="********" id="password" v-model="currentUser.password">
+            <button type="submit" value="login" name="login" id="user-form-btn" @click="signIn();">Login</button>
         </div>
         <p>Not a member? <a href="register.php">Sign up</a></p>
-    </form>
+    </div>
     <footer>
         <div>
             <h2>Company</h2>
@@ -79,11 +94,65 @@
             <a href="#">Mobile Version</a>
         </div>
     </footer>
-    <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js" integrity="sha256-S1J4GVHHDMiirir9qsXWc8ZWw74PHHafpsHp5PXtjTs=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/navigation.js"></script>
+    <script>
+        var app = new Vue({
+            el:'#form',
+            data: {
+                errorMsg: "",
+                errorEmail: "",
+                errorPassword: "",
+                users: [],
+                currentUser: {
+                    email: "",
+                    password: ""
+                }
+            },
+            methods: {
+                signIn(){
+                    var formData = app.toFormData(app.currentUser);
+                    axios.post("http://localhost/ebooklibrary/process.php?action=login", formData).then(function(response){
+                        console.log(response);
+                        app.currentUser = {
+                            email: "",
+                            password: ""
+                        };
+                        if(response.data.email){
+                            app.errorEmail = response.data.message;
+                            app.errorUserName = '';
+                            app.errorPassword = '';
+                            app.focusEmail();
+                            app.clearMessage();
+                        }
+                        else if(response.data.password){
+                            app.errorPassword = response.data.message;
+                            app.errorEmail='';
+                            app.errorUserName = '';
+                            app.focusPassword();
+                            app.clearMessage();
+                        }
+                        else if(response.data.error){
+                            app.errorMessage = response.data.message;
+                            app.errorEmail='';
+                            app.errorPassword='';
+                        }
+                        else{
+                            window.location.href = 'index.php';
+                        }
+                    });
+                },
+                toFormData(obj){
+                    var fd = new FormData();
+                    for(var i in obj){
+                        fd.append(i,obj[i]);
+                    }
+                    return fd;
+                },
+            }
+        });
+    </script>
 </body>
 </html>
