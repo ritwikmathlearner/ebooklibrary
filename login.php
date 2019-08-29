@@ -114,7 +114,7 @@
             methods: {
                 signIn(){
                     var formData = app.toFormData(app.currentUser);
-                    axios.post("http://localhost/ebooklibrary/process.php?action=login", formData).then(function(response){
+                    axios.post("process.php?action=login", formData).then(function(response){
                         console.log(response);
                         app.currentUser = {
                             email: "",

@@ -21,7 +21,7 @@
                 <a href="index.php"><i class="fas fa-book-open fa-3x"></i></a>
             </div>
             <menu class="nav-link">
-                <li><a href="index.php">Home</a></li>
+                <li><a href="index.php" class="active">Home</a></li>
                 <li><a href="books.php">E-books</a></li>
                 <li><a href="author.php">Authors</a></li>
                 <li><a href="about.php">About</a></li>
@@ -59,12 +59,32 @@
         </section>
     </header>
     <section class="author-list" id="authorList">
+    <div class="author-modal" v-if="modalActive">
+      <div class="close" @click="modalActive=false;">
+        <p>+</p>
+      </div>
+      <div class="author-modal-container">
+        <img v-bind:src="selectedAuthor.img" alt="stephen" />
+        <h1>{{ selectedAuthor.fullName }}</h1>
+        <p>
+        {{ selectedAuthor.detailed_desc }}
+        </p>
+        <div class="books-written">
+          <div v-for="authorBook in authorBooks">
+            <img v-bind:src="authorBook.image" alt="the Shining" />
+            <p>{{ authorBook.name }}</p>
+            <input type="hidden" v-bind:value="authorBook.book_id" name="authorID" />
+          </div>
+        </div>
+      </div>
+    </div>
         <h1>We have covered your love for books with best authors</h1>
             <div class="author">
                 <div class="author-container"  v-for="author in authors">
-                    <img v-bind:src="author.img" alt="">
-                    <h1>{{ author.fullName }}</h1>
+                    <img v-bind:src="author.img" alt=""  @click="modalActive=true; selectAuthor(author);">
+                    <h1 @click="modalActive=true; selectAuthor(author);">{{ author.fullName }}</h1>
                     <p>{{ author.short_desc }}</p>
+                    <!-- <a @click="modalActive=true; selectAuthor(author);">See more</a> -->
                 </div>
             </div>
     </section>
@@ -129,15 +149,20 @@ can change the world.
             data: {
                 successMessage: "",
                 errorMessage: "",
-                authors: []
+                authors: [],
+                authorBooks: [],
+                modalActive: false,
+                authorDetail: {},
+                selectedAuthor: {}
             },
             mounted: function(){
                 this.getAllAuthors();
             },
             methods:{
                 getAllAuthors: function(){
-                axios.get('http://localhost/ebooklibrary/process.php?action=read_author')
+                    axios.get('process.php?action=read_author')
                     .then(function(response){
+                        console.log(response);
                         if(response.data.error){
                             app.errorMessage = response.data.message;
                         }
@@ -145,7 +170,35 @@ can change the world.
                             app.authors = response.data.authors;
                         }
                     });
-		        }
+                },
+                getAuthorBooks: function(authorDesc){
+                    app.authorDetail = authorDesc;
+                    var formData = app.toFormData(app.authorDetail);
+                    axios.post('process.php?action=authorBooks', formData)
+                    .then(function(response){
+                        console.log(response);
+                        app.authorDetail = {
+                            authorID: ""
+                        };
+                        if(response.data.error){
+                            app.errorMessage = response.data.message;
+                        }
+                        else{
+                            app.authorBooks = response.data.authorBooks;
+                        }
+                    });
+                },
+                selectAuthor: function(author){
+                    app.selectedAuthor = author;
+                    app.getAuthorBooks(app.selectedAuthor);
+                },
+                toFormData(obj){
+                    var fd = new FormData();
+                    for(var i in obj){
+                        fd.append(i,obj[i]);
+                    }
+                    return fd;
+                },
             }
         });
     </script>

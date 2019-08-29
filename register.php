@@ -115,7 +115,7 @@
             methods: {
                 addUser(){
                     var formData = app.toFormData(app.newUser);
-                    axios.post("http://localhost/ebooklibrary/process.php?action=register", formData).then(function(response){
+                    axios.post("process.php?action=register", formData).then(function(response){
                         console.log(response);
                         app.newUser = {
                             name: "",

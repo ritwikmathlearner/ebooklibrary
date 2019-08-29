@@ -9,12 +9,27 @@
     }
 
     if($action === 'read_author') {
-        $sql = $conn->query("select fullName, short_desc, img from author");
+        $sql = $conn->query("select authorID, fullName, short_desc, img, detailed_desc from author");
         $authors = array();
         while($row=$sql->fetch_assoc()) {
             array_push($authors, $row);
         }
         $result['authors'] = $authors;
+    }
+    if($action === 'authorBooks') {
+        function check_input($data) {
+            $data = trim($data);
+            $data = stripslashes($data);
+            $data = htmlspecialchars($data);
+            return $data;
+        }
+        $authorID = check_input($_POST['authorID']);
+        $sql = $conn->query("select book_id, name, image from author inner join books on author.authorID = books.author Where books.author = '$authorID'");
+        $authorBooks = array();
+        while($row=$sql->fetch_assoc()) {
+            array_push($authorBooks, $row);
+        }
+        $result['authorBooks'] = $authorBooks;
     }
     if($action === 'register') {
         function check_input($data) {
