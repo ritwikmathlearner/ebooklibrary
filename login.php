@@ -122,7 +122,7 @@
                         };
                         if(response.data.email){
                             app.errorEmail = response.data.message;
-                            app.errorUserName = '';
+                            app.errorMsg = '';
                             app.errorPassword = '';
                             app.focusEmail();
                             app.clearMessage();
@@ -130,12 +130,12 @@
                         else if(response.data.password){
                             app.errorPassword = response.data.message;
                             app.errorEmail='';
-                            app.errorUserName = '';
+                            app.errorMsg = '';
                             app.focusPassword();
                             app.clearMessage();
                         }
                         else if(response.data.error){
-                            app.errorMessage = response.data.message;
+                            app.errorMsg = response.data.message;
                             app.errorEmail='';
                             app.errorPassword='';
                         }

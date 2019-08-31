@@ -14,6 +14,12 @@ body {
   font-family: "Roboto", sans-serif;
   overflow-x: hidden;
 }
+.error {
+  color: red !important;
+}
+button {
+  outline: none;
+}
 h1,
 h2,
 h3,
@@ -182,8 +188,8 @@ header section p {
   color: red;
 }
 .user-form input,
-label,
-button {
+.user-form label,
+.user-form button {
   width: 100%;
   padding: 0.5rem 0;
   margin: 0.2rem 0;
@@ -256,6 +262,7 @@ footer > div a i {
   padding: 0.2rem 1rem 1rem 1rem;
   color: #333;
   border-radius: 10px;
+  box-shadow: 0 8px 6px -6px #333;
 }
 .author-container h1 {
   color: #333;
@@ -369,7 +376,7 @@ footer > div a i {
   display: flex;
   justify-content: center;
 }
-.books-written div {
+.books-written form {
   width: 200px;
   border: 1px solid #ffcb9a;
   display: flex;
@@ -379,10 +386,11 @@ footer > div a i {
   margin: 0 0.5rem;
   padding: 0.5rem 0;
 }
-.books-written div > p {
+.books-written form > p {
   cursor: pointer;
+  text-align: center;
 }
-.books-written div > img {
+.books-written form > input[type="image"] {
   width: 50%;
   margin: 0.5rem 0;
 }
@@ -410,6 +418,120 @@ footer > div a i {
     url("../img/about-us-img-primary.jpg") no-repeat center center/cover;
   grid-column: 1/4;
 }
-.about-us-description * {
+.about-us-details * {
   margin: 0.5rem 0;
+}
+.booklist {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.booklist > form {
+  text-align: center;
+  margin: 0 0.5rem;
+  padding: 0.5rem;
+}
+.booklist > form p {
+  text-align: justify;
+}
+.booklist > form img {
+  cursor: pointer;
+}
+.highestratedbooks {
+  background: #eea;
+  padding: 1rem 0;
+}
+.highestratedbooks > h1 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 0.8rem;
+}
+.rating {
+  display: inline-block;
+  text-align: center !important;
+  border: 1px solid #fff;
+  padding: 0.5rem 1rem;
+  margin: 0.75rem;
+  background: green;
+  color: #fff;
+}
+.book-page-main {
+  width: 100%;
+  display: flex;
+  padding: 1rem;
+}
+.book-page-main > div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 1rem;
+}
+.book-page-main > div * {
+  margin: 0.5rem 0;
+}
+.book-page-main > div .rating {
+  margin: 0;
+  width: 4rem;
+}
+.book-page-main > div button {
+  background: #116466;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  color: #ffcb9a;
+  cursor: pointer;
+}
+.book-page-main > div button:hover {
+  background: #333;
+  color: #fff;
+}
+.book-page-main > div a {
+  text-decoration: none;
+  background: #116466;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  color: #ffcb9a;
+  text-transform: uppercase;
+}
+.book-page-main > div a:hover {
+  background: #333;
+  color: #fff;
+}
+.book-reviews {
+  width: 100%;
+  background: #8d8741;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.book-reviews h1 {
+  color: #fff;
+  text-decoration: underline;
+}
+.user-review .rating {
+  margin: 0;
+  width: 4rem;
+  font-size: 0.75rem;
+}
+.user-review {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 5rem;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  /* max-width: 300px; */
+}
+.user-review h3 {
+  width: 5rem;
+}
+.user-review .review-given {
+  grid-column: 1/3;
+  margin: 0.25rem 0;
+}
+.user-review hr {
+  margin: 0.5rem 0;
+  grid-column: 1/3;
 }

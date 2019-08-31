@@ -16,6 +16,14 @@
         }
         $result['authors'] = $authors;
     }
+    if($action === 'read_highestRatedBooks') {
+        $sql = $conn->query("select book_id, name, short_desc, image, average_rating from books Order By average_rating DESC limit 3");
+        $ratedBooks = array();
+        while($row=$sql->fetch_assoc()) {
+            array_push($ratedBooks, $row);
+        }
+        $result['ratedBooks'] = $ratedBooks;
+    }
     if($action === 'authorBooks') {
         function check_input($data) {
             $data = trim($data);
@@ -24,7 +32,7 @@
             return $data;
         }
         $authorID = check_input($_POST['authorID']);
-        $sql = $conn->query("select book_id, name, image from author inner join books on author.authorID = books.author Where books.author = '$authorID'");
+        $sql = $conn->query("select book_id, name, image, average_rating from author inner join books on author.authorID = books.author Where books.author = '$authorID' Order By average_rating DESC Limit 4");
         $authorBooks = array();
         while($row=$sql->fetch_assoc()) {
             array_push($authorBooks, $row);
@@ -142,10 +150,101 @@
                                 $_SESSION["admin_email"] = $email;
                             }
                         }
+                } else {
+                    $result['error'] = true;
+                    $result['message'] = "Email or password wrong";
                 }
             }
         }
     }
+
+    if($action === 'bookdetails') {
+        $book_id = $_SESSION['bookdisplay'];
+        $sql = $conn->query("select books.book_id, books.name, books.average_rating, books.image, books.price, author.fullName from books inner join author on books.author = author.authorID where book_id='$book_id'");
+        $bookdetails = array();
+        while($row=$sql->fetch_assoc()) {
+            array_push($bookdetails, $row);
+            // echo $row['name'];
+        }
+        $result['bookdetails'] = $bookdetails;
+        // unset($_SESSION['bookdisplay']);
+    }
+
+    if($action === 'checkIfPurchased') {
+        $book_id = $_SESSION['bookdisplay'];
+        $cust_email = $_SESSION["customer_email"];
+        // echo $cust_email;
+        $sql = $conn->query("select user from purchase where book='$book_id' AND user = '$cust_email'");
+        // $result = $conn->query($sql);
+        if ($sql->num_rows > 0) {
+            $result['bookpurchase'] = true;
+        } else {
+            $result['bookpurchase'] = false;
+        }
+    }
+
+    if($action === 'purchase') {
+        function check_input($data) {
+            $data = trim($data);
+            $data = stripslashes($data);
+            $data = htmlspecialchars($data);
+            return $data;
+        }
+        $cust_email = $_SESSION["customer_email"];
+        $book_id = check_input($_POST['book_id']);
+        $price = check_input($_POST['price']);
+        $sql = $conn->query("select credit from user where email='$cust_email'");
+        $bookdetails = array();
+        while($row=$sql->fetch_assoc()) {
+            $credit = $row['credit'];
+        }
+        // $result['result'] = $credit;
+        $date = date('Y/m/d H:i:s');
+        if($credit > $price){
+            $sql = "insert into purchase values('$cust_email', '$book_id', '$date')";
+            $query = $conn->query($sql);
+            if($query){
+                $result['result'] = true;
+                $currentCredit = $credit - $price;
+                $sql = "UPDATE user SET credit='$currentCredit' WHERE email= '$cust_email'";
+                if ($conn->query($sql) === TRUE) {
+                    $result['credit'] = round($currentCredit,2);
+                    $result['complete'] = true;
+                } else {
+                    // echo "Error updating record: " . $conn->error;
+                }
+            }
+            else{
+                $result['error'] = true;
+                $result['message'] = "Could not process purchase";
+            }
+        } else {
+            $result['error'] = true;
+            $result['message'] = "Sorry, you do not have sufficient credit";
+        }
+    }
+
+    if($action === 'reviews') {
+        $book_id = $_SESSION['bookdisplay'];
+        $sql = $conn->query("select rating, review, user.user_name from user inner join review on user.email = review.email where review.book = '$book_id'");
+        $reviews = array();
+        while($row=$sql->fetch_assoc()) {
+            array_push($reviews, $row);
+        }
+        $result['allReview'] = $reviews;
+    }
+
+    if($action === 'checkIfReviewed') {
+        $book_id = $_SESSION['bookdisplay'];
+        $cust_email = $_SESSION["customer_email"];
+        $sql = $conn->query("select user.user_name from user inner join review on user.email = review.email where review.book = '$book_id' and review.email = '$cust_email'");
+        if ($sql->num_rows > 0) {
+            $result['bookreview'] = true;
+        } else {
+            $result['bookreview'] = false;
+        }
+    }
+
     $conn->close();
     header("Content-type: application/json");
     echo json_encode($result);

@@ -70,23 +70,24 @@
         {{ selectedAuthor.detailed_desc }}
         </p>
         <div class="books-written">
-          <div v-for="authorBook in authorBooks">
-            <img v-bind:src="authorBook.image" alt="the Shining" />
+          <form action="book.php" method="GET" v-for="authorBook in authorBooks">
+            <input type="image" name="bookID" v-bind:value="authorBook.book_id" v-bind:alt="authorBook.name" v-bind:src="authorBook.image">
+            <p class="rating">{{ authorBook.average_rating }}</p>
             <p>{{ authorBook.name }}</p>
-            <input type="hidden" v-bind:value="authorBook.book_id" name="authorID" />
-          </div>
+            <input type="hidden" name="bookID" v-bind:value="authorBook.book_id">
+          </form>
         </div>
       </div>
     </div>
-        <h1>We have covered your love for books with best authors</h1>
-            <div class="author">
-                <div class="author-container"  v-for="author in authors">
-                    <img v-bind:src="author.img" alt=""  @click="modalActive=true; selectAuthor(author);">
-                    <h1 @click="modalActive=true; selectAuthor(author);">{{ author.fullName }}</h1>
-                    <p>{{ author.short_desc }}</p>
-                    <!-- <a @click="modalActive=true; selectAuthor(author);">See more</a> -->
-                </div>
+    <h1>We have covered your love for books with best authors</h1>
+        <div class="author">
+            <div class="author-container"  v-for="author in authors">
+                <img v-bind:src="author.img" alt=""  @click="modalActive=true; selectAuthor(author);">
+                <h1 @click="modalActive=true; selectAuthor(author);">{{ author.fullName }}</h1>
+                <p>{{ author.short_desc }}</p>
+                <!-- <a @click="modalActive=true; selectAuthor(author);">See more</a> -->
             </div>
+        </div>
     </section>
     <section class="aboutus" id="about">
         <h1>Our short overview</h1>
@@ -105,8 +106,20 @@
         <div class="index-about-img">
             <h3>
             The right book in the right hands at the right time
-can change the world.
+            can change the world.
             </h3>
+        </div>
+    </section>
+    <section class="highestratedbooks">
+        <h1>Highest rated books on our website</h1>
+        <div class="booklist" id="booklist">
+            <form action="book.php" method="GET"  v-for="ratedBook in ratedBooks">
+                <input type="image" name="bookID" v-bind:value="ratedBook.book_id" v-bind:alt="ratedBook.name" v-bind:src="ratedBook.image">
+                <h1>{{ ratedBook.name }}</h1>
+                <p class="rating">{{ ratedBook.average_rating }}</p>
+                <p>{{ ratedBook.short_desc }}</p>
+                <input type="hidden" name="bookID" v-bind:value="ratedBook.book_id">
+            </form>
         </div>
     </section>
     <footer>
@@ -162,7 +175,7 @@ can change the world.
                 getAllAuthors: function(){
                     axios.get('process.php?action=read_author')
                     .then(function(response){
-                        console.log(response);
+                        // console.log(response);
                         if(response.data.error){
                             app.errorMessage = response.data.message;
                         }
@@ -199,6 +212,29 @@ can change the world.
                     }
                     return fd;
                 },
+            }
+        });
+        var app2 = new Vue({
+            el: '#booklist',
+            data: {
+                ratedBooks: []
+            },
+            mounted: function(){
+                this.getHighestRatedBooks();
+            },
+            methods: {
+                getHighestRatedBooks: function(){
+                    axios.get('process.php?action=read_highestRatedBooks')
+                    .then(function(response){
+                        console.log(response);
+                        if(response.data.error){
+                            app2.errorMessage = response.data.message;
+                        }
+                        else{
+                            app2.ratedBooks = response.data.ratedBooks;
+                        }
+                    });
+                }
             }
         });
     </script>

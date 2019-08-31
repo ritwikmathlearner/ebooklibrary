@@ -59,7 +59,7 @@
                 <h1>The right book in the right hands at the right time
                 can change the world.</h1>
             </div>
-            <div class="about-us-description">
+            <div class="about-us-details">
                 <h1>Who We Are</h1>
                 <p>E-Book Library is the world’s largest site for readers and book recommendations. 
             Our mission is to help people find and share books they love. E-Book Library launched in August 2019.</p>
