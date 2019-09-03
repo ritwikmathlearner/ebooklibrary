@@ -24,6 +24,7 @@
         }
         $result['ratedBooks'] = $ratedBooks;
     }
+    
     if($action === 'authorBooks') {
         function check_input($data) {
             $data = trim($data);
@@ -242,6 +243,41 @@
             $result['bookreview'] = true;
         } else {
             $result['bookreview'] = false;
+        }
+    }
+
+    if($action === 'addReview') {
+        function check_input($data) {
+            $data = trim($data);
+            $data = stripslashes($data);
+            $data = htmlspecialchars($data);
+            return $data;
+        }
+        $book_id = $_SESSION['bookdisplay'];
+        $cust_email = $_SESSION["customer_email"];
+        $rating = check_input($_POST['rating']);
+        $reviewContext = check_input($_POST['reviewContext']);
+        if($reviewContext==''){
+            $result['reviewContextFalse'] = true;
+            $result['message'] = "Review context is required";
+        }
+
+        elseif($rating==''){
+            $result['ratingFalse'] = true;
+            $result['message'] = "Rating is required";
+        }
+
+        else{
+            $sql = "insert into review values('$cust_email', '$book_id', '$rating', '$reviewContext')";
+            $query = $conn->query($sql);
+
+            if($query){
+                $result['message'] = $cust_email;
+            }
+            else{
+                $result['error'] = true;
+                $result['message'] = "There is some error";
+            }
         }
     }
 

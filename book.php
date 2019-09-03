@@ -69,20 +69,15 @@
         </div>
       </nav>
       <menu class="sub-menu">
-        <li><a href="books.php?category=fiction">Fiction</a></li>
-        <li><a href="">Non-fiction</a></li>
-        <li><a href="">Thriller</a></li>
-        <li><a href="">Horror</a></li>
-        <li><a href="">Poems</a></li>
-        <form action="search.php" method="POST" id="search-form">
-          <input
-            type="text"
-            name="search"
-            id="search"
-            placeholder="Enter book name"
-          />
-        </form>
-      </menu>
+            <li><a href="books.php?action=fiction">Fiction</a></li>
+            <li><a href="books.php?action=fantasy">Fantasy</a></li>
+            <li><a href="books.php?action=thriller">Thriller</a></li>
+            <li><a href="books.php?action=horror">Horror</a></li>
+            <li><a href="books.php?action=mystery">Mystery</a></li>
+            <form action="books.php" method="POST" id="search-form">
+                <input type="text" name="search" id="search" placeholder="Enter book name">
+            </form>
+        </menu>
     </header>
     <div>
         <section class="book-page-main" id="bookShowcase" v-for="book in books">
@@ -115,6 +110,22 @@
             <p class="rating">{{ review.rating }}</p>
             <p class="review-given">{{ review.review }}</p>
             <hr />
+        </div>
+        <div class="give-review" v-if="purchased">
+            <select name="rating" id="" v-model="reviewInput.rating">
+                 <option selected>1</option>       
+                 <option>2</option>       
+                 <option>3</option>       
+                 <option>4</option>       
+                 <option>5</option>       
+            </select>
+            <textarea name="reviewContext" id="reviewContext" cols="30" rows="5" v-model="reviewInput.reviewContext"></textarea>
+            <button type="submit" value="addReview" name="addReview" id="user-form-btn" @click="addReview();" v-if="!reviewed">SUBMIT</button>
+            <span class="error">{{ errorReviewContext }}</span>
+            <span class="error">{{ errorRating }}</span>
+        </div>
+        <div v-else>
+            <p class="error">You can review only purchased books</p>
         </div>
     </section>
     <footer>
@@ -237,6 +248,12 @@
                 errorMessage: "",
                 purchased: false,
                 reviewed: false,
+                errorReviewContext: "",
+                errorRating: "",
+                reviewInput: {
+                    rating: "",
+                    reviewContext: ""
+                },
                 reviews: []
             },
             mounted: function(){
@@ -281,6 +298,39 @@
                         else{
                             app2.reviewed = response.data.bookreview;
                             console.log(app2.reviewed);
+                        }
+                    });
+                },
+                addReview: function(){
+                    var formData = app2.toFormData(app2.reviewInput);
+                    axios.post('process.php?action=addReview', formData)
+                    .then(function(response){
+                        console.log(response);
+                        app2.reviewInput = {
+                            rating: "",
+                            reviewContext: ""
+                        };
+                        if(response.data.reviewContextFalse){
+                            app2.errorReviewContext = response.data.message;
+                            // console.log(app2.errorReviewContext);
+                            app2.errorRating = "";
+                            app2.reviewed = false;
+                        }
+                        if(response.data.ratingFalse){
+                            app2.errorRating = response.data.message;
+                            app2.errorReviewContext = "";
+                            app2.reviewed = false;
+                        }
+                        else if(response.data.error){
+                            app2.errorMessage = response.data.message;
+                            app2.reviewed = false;
+                        }
+                        else if(response.data.error){
+                            app2.errorMessage = response.data.message;
+                        }
+                        else{
+                            app2.getAllReviews();
+                            app2.reviewed = true;
                         }
                     });
                 },

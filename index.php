@@ -44,12 +44,12 @@
             </div>
         </nav>
         <menu class="sub-menu">
-            <li><a href="books.php?category=fiction">Fiction</a></li>
-            <li><a href="">Non-fiction</a></li>
-            <li><a href="">Thriller</a></li>
-            <li><a href="">Horror</a></li>
-            <li><a href="">Poems</a></li>
-            <form action="search.php" method="POST" id="search-form">
+            <li><a href="books.php?action=fiction">Fiction</a></li>
+            <li><a href="books.php?action=fantasy">Fantasy</a></li>
+            <li><a href="books.php?action=thriller">Thriller</a></li>
+            <li><a href="books.php?action=horror">Horror</a></li>
+            <li><a href="books.php?action=mystery">Mystery</a></li>
+            <form action="books.php" method="POST" id="search-form">
                 <input type="text" name="search" id="search" placeholder="Enter book name">
             </form>
         </menu>
@@ -113,13 +113,22 @@
     <section class="highestratedbooks">
         <h1>Highest rated books on our website</h1>
         <div class="booklist" id="booklist">
-            <form action="book.php" method="GET"  v-for="ratedBook in ratedBooks">
-                <input type="image" name="bookID" v-bind:value="ratedBook.book_id" v-bind:alt="ratedBook.name" v-bind:src="ratedBook.image">
-                <h1>{{ ratedBook.name }}</h1>
-                <p class="rating">{{ ratedBook.average_rating }}</p>
-                <p>{{ ratedBook.short_desc }}</p>
-                <input type="hidden" name="bookID" v-bind:value="ratedBook.book_id">
+        <?php 
+            $sql = $conn->query("select book_id, name, short_desc, image, average_rating from books Order By average_rating DESC limit 3");
+            while($row=$sql->fetch_assoc()) {
+        ?>
+            <!-- <form action="book.php" method="GET"  v-for="ratedBook in ratedBooks"> -->
+            <form action="book.php" method="GET">
+                <!-- <input type="image" name="bookID" v-bind:value="ratedBook.book_id" v-bind:alt="ratedBook.name" v-bind:src="ratedBook.image"> -->
+                <input type="image" name="bookID" value="<?php echo $row['book_id']; ?>" alt="<?php echo $row['name']; ?>" src="<?php echo $row['image']; ?>">
+                <h1><?php echo $row['name']; ?></h1>
+                <p class="rating"><?php echo $row['average_rating']; ?></p>
+                <p><?php echo $row['short_desc']; ?></p>
+                <input type="hidden" name="bookID" value="<?php echo $row['book_id']; ?>">
             </form>
+        <?php
+            }
+        ?>
         </div>
     </section>
     <footer>

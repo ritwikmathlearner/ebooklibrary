@@ -535,3 +535,99 @@ footer > div a i {
   margin: 0.5rem 0;
   grid-column: 1/3;
 }
+.give-review {
+  width: 100%;
+  background: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.give-review * {
+  margin: 0.5rem 0;
+}
+.give-review select {
+  padding: 0.5rem 1rem;
+  background: #333;
+  color: #fff;
+}
+.give-review textarea {
+  width: 70%;
+  height: 10%;
+}
+.give-review button {
+  background: #333;
+  color: #fff;
+  border: none;
+  outline: none;
+  padding: 0.75rem 1.75rem;
+  cursor: pointer;
+}
+.give-review button:hover {
+  background: #111;
+}
+.contact-form {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+.contact-form > div {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+.contact-form > div label {
+  display: inline-block;
+  padding: 0.25rem 0;
+  text-align: right;
+}
+.contact-form > div input {
+  width: 75%;
+  padding: 0.25rem 0;
+  border: #2e2f30 solid 1px;
+  border-radius: 5px;
+  padding: 0.5rem;
+  outline: none;
+}
+.contact-form > input {
+  background: #2e2f30;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  margin: 1.5rem 0;
+}
+.contact-form a {
+  text-decoration: none;
+  color: #16416b;
+}
+.contact-form textarea {
+  width: 100%;
+  height: 10vh;
+}
+.books {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+  align-items: flex-start;
+  grid-gap: 20px;
+  padding: 2rem 0;
+}
+.books > form {
+  text-align: center;
+  margin: 0 0.5rem;
+  padding: 0.5rem;
+  background: #ddd;
+}
+.books > form p {
+  text-align: justify;
+}
+.books > form img {
+  cursor: pointer;
+}

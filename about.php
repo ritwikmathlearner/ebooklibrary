@@ -44,12 +44,12 @@
                 </div>
             </nav>
             <menu class="sub-menu">
-                <li><a href="books.php?category=fiction">Fiction</a></li>
-                <li><a href="">Non-fiction</a></li>
-                <li><a href="">Thriller</a></li>
-                <li><a href="">Horror</a></li>
-                <li><a href="">Poems</a></li>
-                <form action="search.php" method="POST" id="search-form">
+                <li><a href="books.php?action=fiction">Fiction</a></li>
+                <li><a href="books.php?action=fantasy">Fantasy</a></li>
+                <li><a href="books.php?action=thriller">Thriller</a></li>
+                <li><a href="books.php?action=horror">Horror</a></li>
+                <li><a href="books.php?action=mystery">Mystery</a></li>
+                <form action="books.php" method="POST" id="search-form">
                     <input type="text" name="search" id="search" placeholder="Enter book name">
                 </form>
             </menu>
