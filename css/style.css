@@ -631,3 +631,8 @@ footer > div a i {
 .books > form img {
   cursor: pointer;
 }
+.wishlistIcon {
+  color: red;
+  cursor: pointer;
+  padding: 0 2rem;
+}

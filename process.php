@@ -184,6 +184,49 @@
         }
     }
 
+    if($action === 'checkIfWisglisted') {
+        $book_id = $_SESSION['bookdisplay'];
+        $cust_email = $_SESSION["customer_email"];
+        // echo $cust_email;
+        $sql = $conn->query("select customer from wishlist where book='$book_id' AND customer = '$cust_email'");
+        // $result = $conn->query($sql);
+        if ($sql->num_rows > 0) {
+            $result['wishlisted'] = true;
+        } else {
+            $result['wishlisted'] = false;
+        }
+    }
+
+    if($action === 'addToWIshlist') {
+        $book_id = $_SESSION['bookdisplay'];
+        $cust_email = $_SESSION["customer_email"];
+        // echo $cust_email;
+        $sql = "insert into wishlist values('$book_id', '$cust_email')";
+        // $result = $conn->query($sql);
+        $query = $conn->query($sql);
+        if($query){
+            $result['wishlisted'] = true;
+        }
+        else{
+            $result['wishlisted'] = false;
+        }
+    }
+
+    if($action === 'removeFromWIshlist') {
+        $book_id = $_SESSION['bookdisplay'];
+        $cust_email = $_SESSION["customer_email"];
+        // echo $cust_email;
+        $sql = "DELETE FROM wishlist WHERE book='$book_id' AND customer='$cust_email'";
+        // $result = $conn->query($sql);
+        $query = $conn->query($sql);
+        if($query){
+            $result['wishlisted'] = false;
+        }
+        else{
+            $result['wishlisted'] = true;
+        }
+    }
+
     if($action === 'purchase') {
         function check_input($data) {
             $data = trim($data);

@@ -93,6 +93,10 @@
                   ?>
             <a href="" v-if="purchased">Download</a>
             <button type="submit"  @click="purchaseBook(book);" v-else>PURCHASE</button>
+            <div>
+                <i class="fas fa-heart fa-3x wishlistIcon" @click="removeFromWIshlist();" v-if="wishlisted"></i>
+                <i class="far fa-heart fa-3x wishlistIcon" @click="addToWIshlist();"  v-else></i>
+            </div>
             <p class="error">{{ errorMessage }}</p>
             <p v-if="purchaseComplete">{{ credit }} is your current credit balance</p>
             <?php 
@@ -124,7 +128,7 @@
             <span class="error">{{ errorReviewContext }}</span>
             <span class="error">{{ errorRating }}</span>
         </div>
-        <div v-else>
+        <div class="give-review" v-else>
             <p class="error">You can review only purchased books</p>
         </div>
     </section>
@@ -177,6 +181,7 @@
                 books: [],
                 authorBooks: [],
                 modalActive: false,
+                wishlisted: true,
                 authorDetail: {},
                 selectedBook: {},
                 credit: ""
@@ -184,6 +189,7 @@
             mounted: function(){
                 this.getBookDetails();
                 this.checkIfPurchased();
+                this.checkIfWisglisted();
             },
             methods:{
                 getBookDetails: function(){
@@ -229,6 +235,46 @@
                             app.credit = response.data.credit;
                             app.purchaseComplete = response.data.complete;
                             // console.log(app.purchased);
+                        }
+                    });
+                },
+                checkIfWisglisted: function(){
+                    axios.get('process.php?action=checkIfWisglisted')
+                    .then(function(response){
+                        console.log(response);
+                        if(response.data.error){
+                            app.wishlisted = response.data.wishlisted;
+                            console.log(app.wishlisted);
+                        }
+                        else{
+                            app.wishlisted = response.data.wishlisted;
+                            console.log(app.wishlisted);
+                        }
+                    });
+                },
+                addToWIshlist: function(){
+                    axios.post('process.php?action=addToWIshlist')
+                    .then(function(response){
+                        console.log(response);
+                        if(response.data.error){
+                            app.wishlisted = response.data.wishlisted;
+                        }
+                        else{
+                            app.wishlisted = response.data.wishlisted;
+                            app.checkIfWisglisted();
+                        }
+                    });
+                }, 
+                removeFromWIshlist: function(){
+                    axios.post('process.php?action=removeFromWIshlist')
+                    .then(function(response){
+                        console.log(response);
+                        if(response.data.error){
+                            app.wishlisted = response.data.wishlisted;
+                        }
+                        else{
+                            app.wishlisted = response.data.wishlisted;
+                            app.checkIfWisglisted();
                         }
                     });
                 },
