@@ -2,6 +2,17 @@
     require_once 'connection.php';
     error_reporting (0);
     session_start();
+    $cust_email = $_SESSION["customer_email"];
+    $sql = $conn->query("select books.*, author.fullName from books inner join author on books.author = author.authorID inner join wishlist on books.book_id = wishlist.book inner join user on wishlist.customer = user.email where wishlist.customer = '$cust_email'");
+        while($row=$sql->fetch_assoc()) {
+            $data .= '<form action="book.php" method="GET">
+            <input type="image" name="bookID" value="' . $row["book_id"] . '" " src="' . $row["image"] . '">
+            <h1>' . $row["name"] .'</h1>
+            <p class="rating">' . $row["average_rating"] . '</p>
+            <p>' . $row["short_desc"] . '</p>
+            <input type="hidden" name="bookID" value="' . $row["book_id"] . '">
+            </form>';
+        }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,45 +20,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ebook Library - Home</title>
+    <title>Ebook Library - Books</title>
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://kit.fontawesome.com/9d4da5e5f7.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo">
-                <a href="index.php"><i class="fas fa-book-open fa-3x"></i></a>
-            </div>
-            <menu class="nav-link">
-                <li><a href="index.php">Home</a></li>
-                <li><a href="books.php">E-books</a></li>
-                <li><a href="author.php">Authors</a></li>
-                <li><a href="about.php">About</a></li>
-                <li><a href="contact.php"  class="active">Contact</a></li>
-                <?php 
-                    if(isset($_SESSION["customer_name"])) {
-                ?>
-                    <li><a href="logout.php">logout</a></li>
-                    <li><a href="#"><?php echo $_SESSION["customer_user_name"] ; ?></a></li>
-                <?php 
-                    } 
-                    elseif(isset($_SESSION["admin"])) {
-                        echo '<a href="admin.php">Admin Section</a>';
-                    }
-                    else {
-                ?>
-                    <li><a href="login.php">login</a></li>
-                <?php } ?>
-            </menu>
-            <div class="menu-lines">
-                <div class="line1"></div>
-                <div class="line2"></div>
-                <div class="line3"></div>
-            </div>
-        </nav>
-        <menu class="sub-menu">
+<header>
+      <nav>
+        <div class="logo">
+          <a href="index.php"><i class="fas fa-book-open fa-3x"></i></a>
+        </div>
+        <menu class="nav-link">
+          <li><a href="index.php">Home</a></li>
+          <li><a href="books.php">E-books</a></li>
+          <li><a href="author.php">Authors</a></li>
+          <li><a href="about.php">About</a></li>
+          <li><a href="contact.php">Contact</a></li>
+          <?php 
+                      if(isset($_SESSION["customer_name"])) {
+                  ?>
+          <li><a href="logout.php">logout</a></li>
+          <li>
+            <a href="wishlist.php" class="active"><?php echo $_SESSION["customer_user_name"]; ?> (Wishlist)</a>
+          </li>
+          <?php 
+                      } else {
+                  ?>
+          <li><a href="login.php">login</a></li>
+          <?php } ?>
+        </menu>
+        <div class="menu-lines">
+          <div class="line1"></div>
+          <div class="line2"></div>
+          <div class="line3"></div>
+        </div>
+      </nav>
+      <menu class="sub-menu">
             <li><a href="books.php?action=fiction">Fiction</a></li>
             <li><a href="books.php?action=fantasy">Fantasy</a></li>
             <li><a href="books.php?action=thriller">Thriller</a></li>
@@ -58,20 +67,11 @@
             </form>
         </menu>
     </header>
-    <form class="contact-form">
-          <div>
-            <label for="name">Name</label>
-            <input type="Name" placeholder="Enter your full name" name="email">
-          </div>
-          <div>
-            <label for="email">Email</label>
-            <input type="email" placeholder="Enter your email" name="email">
-          </div>
-          <div>
-            <textarea name="message" placeholder="Write your concern here"></textarea>
-          </div>
-          <input type="submit" value="Submit" name="login" class="uppercase">
-          </form>
+    <div id="bookList">
+        <div class="books">
+            <?php echo $data; ?>
+        </div>
+    </div>
     <footer>
         <div>
             <h2>Company</h2>

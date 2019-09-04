@@ -32,7 +32,11 @@
                     <li><a href="logout.php">logout</a></li>
                     <li><a href="#"><?php echo $_SESSION["customer_user_name"] ; ?></a></li>
                 <?php 
-                    } else {
+                    } 
+                    elseif(isset($_SESSION["admin"])) {
+                        echo '<a href="admin.php">Admin Section</a>';
+                    }
+                    else {
                 ?>
                     <li><a href="login.php">login</a></li>
                 <?php } ?>

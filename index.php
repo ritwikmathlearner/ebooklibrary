@@ -30,9 +30,12 @@
                     if(isset($_SESSION["customer_name"])) {
                 ?>
                     <li><a href="logout.php">logout</a></li>
-                    <li><a href="#"><?php echo $_SESSION["customer_user_name"] ; ?></a></li>
+                    <a href="wishlist.php"><?php echo $_SESSION["customer_user_name"] ; ?> (Wishlist)</a>
                 <?php 
-                    } else {
+                    } elseif(isset($_SESSION["admin"])) {
+                        echo '<a href="admin.php">Admin Section</a>';
+                    }
+                    else {
                 ?>
                     <li><a href="login.php">login</a></li>
                 <?php } ?>

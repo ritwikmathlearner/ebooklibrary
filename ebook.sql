@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 03, 2019 at 03:54 PM
+-- Generation Time: Sep 04, 2019 at 04:10 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.3.1
 
@@ -242,8 +242,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_name`, `name`, `email`, `password`, `type`, `credit`) VALUES
-('james@123', 'James Rodriguez', 'james.r@gmail.com', '1234', 'customer', '23.98'),
-('ronnie', 'Ritwik Math', 'ritwikmath@gmail.com', '1234', 'customer', '1.24');
+('adam034', 'Adams James', 'adam@gmail.com', '1234', 'admin', '10.00'),
+('james@123', 'James Rodrigez', 'james.r@gmail.com', '1234', 'customer', '23.98'),
+('ronnie', 'Ritwik Math', 'ritwikmath@gmail.com', '1234', 'customer', '11.24');
 
 -- --------------------------------------------------------
 
@@ -255,6 +256,14 @@ CREATE TABLE `wishlist` (
   `book` int(11) NOT NULL,
   `customer` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `wishlist`
+--
+
+INSERT INTO `wishlist` (`book`, `customer`) VALUES
+(19, 'ritwikmath@gmail.com'),
+(23, 'ritwikmath@gmail.com');
 
 --
 -- Indexes for dumped tables

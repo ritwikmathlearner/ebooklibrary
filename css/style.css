@@ -636,3 +636,57 @@ footer > div a i {
   cursor: pointer;
   padding: 0 2rem;
 }
+.userlist {
+  width: 100%;
+  min-height: 50vh;
+  padding: 1rem 2rem;
+}
+.userlist table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.userlist table td, .userlist table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+.userlist table tr:nth-child(even){background-color: #f2f2f2;}
+.userlist table tr:hover {background-color: #ddd;}
+.userlist table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+.userlist table tr i {
+  margin: 0 .75rem;
+  cursor: pointer;
+}
+.userlist table tr .edit-btn {
+  color: green;
+}
+.userlist table tr .delete-btn {
+  color: red;
+}
+.edit-modal {
+  position: absolute;
+  height: 70vh;
+  width: 50%;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  background: rgba(29, 29, 29, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.edit-modal input {
+  padding: .5rem 0;
+  width: 80%;
+  margin: .5rem 0;
+}
+.success {
+  color: #4CAF50;
+}

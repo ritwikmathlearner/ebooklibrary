@@ -3,7 +3,7 @@
     error_reporting (0);
     session_start();
     if(isset($_POST['search'])) {
-        $bookName = $_POST['search'];
+        $cust_email = $_SESSION["customer_email"];
         $sql = $conn->query("select books.*, author.fullName from books inner join author on books.author = author.authorID where books.name Like '%$bookName%'");
         while($row=$sql->fetch_assoc()) {
             $data .= '<form action="book.php" method="GET">
@@ -64,10 +64,14 @@
                   ?>
           <li><a href="logout.php">logout</a></li>
           <li>
-            <a href="#"><?php echo $_SESSION["customer_user_name"] ; ?></a>
+          <a href="wishlist.php"><?php echo $_SESSION["customer_user_name"] ; ?> (Wishlist)</a>
           </li>
           <?php 
-                      } else {
+                      } 
+                      elseif(isset($_SESSION["admin"])) {
+                        echo '<a href="admin.php">Admin Section</a>';
+                    }
+                    else {
                   ?>
           <li><a href="login.php">login</a></li>
           <?php } ?>

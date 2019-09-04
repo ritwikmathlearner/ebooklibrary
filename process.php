@@ -16,6 +16,16 @@
         }
         $result['authors'] = $authors;
     }
+
+    if($action === 'read_users') {
+        $sql = $conn->query("select * from user where type = 'customer'");
+        $users = array();
+        while($row=$sql->fetch_assoc()) {
+            array_push($users, $row);
+        }
+        $result['users'] = $users;
+    }
+    
     if($action === 'read_highestRatedBooks') {
         $sql = $conn->query("select book_id, name, short_desc, image, average_rating from books Order By average_rating DESC limit 3");
         $ratedBooks = array();
@@ -139,7 +149,7 @@
                             $name = $row["name"];
                             $credit = $row["credit"];
                             $user_name = $row["user_name"];
-                            if($userType = "customer"){
+                            if($userType == "customer"){
                                 // echo 'You are a customer';
                                 $_SESSION["customer_name"] = $name;
                                 $_SESSION["customer_email"] = $email;  
@@ -181,6 +191,32 @@
             $result['bookpurchase'] = true;
         } else {
             $result['bookpurchase'] = false;
+        }
+    }
+
+    if($action === 'saveEdit') {
+        function check_input($data) {
+            $data = trim($data);
+            $data = stripslashes($data);
+            $data = htmlspecialchars($data);
+            return $data;
+        }
+        $email = check_input($_POST['email']);
+        $name = check_input($_POST['name']);
+        $user_name = check_input($_POST['user_name']);
+        $password = check_input($_POST['password']);
+        $credit = check_input($_POST['credit']);
+        $sql = "UPDATE `user` SET `user_name` = '$user_name', `name` = '$name', `password` = '$password', `credit` = '$credit' WHERE `user`.`email` = '$email'";
+        // $result = $conn->query($sql);
+        $query = $conn->query($sql);
+        if($query){
+            $result['error'] = false;
+            $result['message'] = "User edit successful";
+        }
+        else{
+            $result['error'] = true;
+            $result['message'] = "User edit failed";
+            // $result['message'] = $name;
         }
     }
 
